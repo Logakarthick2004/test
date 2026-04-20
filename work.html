@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Contains Nearby Almost Duplicate</title>
+</head>
+<body>
+
+<h2>Contains Nearby Almost Duplicate</h2>
+
+<label>Nums (comma separated):</label><br>
+<input type="text" id="nums" value="1,2,3,1"><br><br>
+
+<label>indexDiff:</label><br>
+<input type="number" id="indexDiff" value="3"><br><br>
+
+<label>valueDiff:</label><br>
+<input type="number" id="valueDiff" value="0"><br><br>
+
+<button onclick="check()">Check</button>
+
+<h3 id="result"></h3>
+
+<script>
+function containsNearbyAlmostDuplicate(nums, indexDiff, valueDiff) {
+    if (valueDiff < 0) return false;
+
+    const buckets = new Map();
+    const size = valueDiff + 1;
+
+    const getBucketId = (num) => Math.floor(num / size);
+
+    for (let i = 0; i < nums.length; i++) {
+        let num = nums[i];
+        let id = getBucketId(num);
+
+        if (buckets.has(id)) return true;
+
+        if (buckets.has(id - 1) && Math.abs(num - buckets.get(id - 1)) <= valueDiff)
+            return true;
+
+        if (buckets.has(id + 1) && Math.abs(num - buckets.get(id + 1)) <= valueDiff)
+            return true;
+
+        buckets.set(id, num);
+
+        if (i >= indexDiff) {
+            buckets.delete(getBucketId(nums[i - indexDiff]));
+        }
+    }
+
+    return false;
+}
+
+function check() {
+    let nums = document.getElementById("nums").value.split(",").map(Number);
+    let indexDiff = parseInt(document.getElementById("indexDiff").value);
+    let valueDiff = parseInt(document.getElementById("valueDiff").value);
+
+    let result = containsNearbyAlmostDuplicate(nums, indexDiff, valueDiff);
+
+    document.getElementById("result").innerText = "Result: " + result;
+}
+</script>
+
+</body>
+</html>
